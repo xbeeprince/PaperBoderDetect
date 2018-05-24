@@ -56,7 +56,9 @@ class DetectModelTrain():
 
             if index % self.cfgs['save_interval'] == 0:
                 saver = tf.train.Saver()
-                saver.save(session, os.path.join(self.cfgs['save_dir'], 'models/hed-model'), global_step=idx)
+                save_dir = ToolUtil.getDirWithPath(self.cfgs['save_dir'])
+                saver.save(session, os.path.join(save_dir, 'models/detect-model'), global_step=index)
+                ToolUtil.print_info('save detect model with index : {}'.format(index))
 
             if index % self.cfgs['val_interval'] == 0:
                 im, em, _ = train_data.get_validation_batch()
@@ -65,12 +67,15 @@ class DetectModelTrain():
                                              feed_dict={self.detectModel.images: im, self.detectModel.edgemaps: em})
 
                 self.detectModel.val_writer.add_summary(summary, index)
-                ToolUtil.print_info('[{}/{}] VALIDATION error : {}'.format(index, self.cfgs['max_iterations'], error))
+                ToolUtil.print_error('[{}/{}] VALIDATION error : {}'.format(index, self.cfgs['max_iterations'], error))
 
         self.detectModel.train_writer.close()
 
 def test():
-
+    session = ToolUtil.get_session(0.4)
+    trainer = DetectModelTrain()
+    trainer.setup()
+    trainer.run(session)
     print "test success"
 
 

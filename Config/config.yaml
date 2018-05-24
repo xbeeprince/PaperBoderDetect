@@ -10,11 +10,13 @@ test_output: 'test_output'
 model_weights_path: 'vgg16.npy'
 # training batch size, 取决于GPU
 batch_size_train: 10
+# validation batch size, ran every val_interval
+batch_size_val: 10
 # 训练集取总数的占比
 train_split: 0.8
 # 训练多少次
-max_iterations: 100000
-# optimizer params (not used currently Adam is used by defailt)
+max_iterations: 1000
+# optimizer params (not used currently Adam is used by default)
 optimizer: 'adam'
 optimizer_params:
     learning_rate: 0.001
@@ -30,7 +32,7 @@ learning_rate_decay: 0.1
 # Apply weighted_cross_entropy_loss to outputs from each side layer
 # Setting to false only loss after last conv layer is computed
 deep_supervision: True
-# Targets are continous if True else binary {0, 1}
+# Targets are continue if True else binary {0, 1}
 target_regression: True
 # Mean pixel value to subtract from BGR image
 mean_pixel_value: [103.939, 116.779, 123.68]
@@ -49,10 +51,10 @@ testing:
     dir: HED-BSDS
     list: HED-BSDS/test.lst
     #
-    image_width: 480
-    image_height: 320
+    image_width: 224
+    image_height: 224
     n_channels: 3
 # use snapshot after test_snapshot intervals for testing
-test_snapshot: 5000
+test_snapshot: 800
 # Apply testing_threshold after sigmoid to generate binary maps set to 0.0 for continous valued edge maps
 testing_threshold: 0.0

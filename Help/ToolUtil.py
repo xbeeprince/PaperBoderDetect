@@ -1,6 +1,9 @@
 # encoding: utf-8
 
 import os
+import wget
+from pyunpack import Archive
+import tensorflow as  tf
 from time import strftime, localtime
 from termcolor import colored
 
@@ -54,3 +57,34 @@ def read_file_list(filelist):
     filenames = [f.strip() for f in filenames]
 
     return filenames
+
+def get_session(gpu_fraction):
+
+    '''Assume that you have 6GB of GPU memory and want to allocate ~2GB'''
+
+    num_threads = 5 #int(os.environ.get('OMP_NUM_THREADS'))
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=gpu_fraction)
+
+    if num_threads:
+        return tf.Session(config=tf.ConfigProto(gpu_options=gpu_options, intra_op_parallelism_threads=num_threads))
+    else:
+        return tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
+
+def download_data(filepath, outputdir):
+
+    _, rar_file = os.path.split(filepath)
+    rar_file = os.path.join(outputdir, rar_file)
+
+    if not os.path.exists(rar_file):
+        print_info('Downloading {} to {}'.format(filepath, rar_file))
+        _ = wget.download(filepath, out=outputdir)
+
+    print_info('Decompressing {} to {}'.format(rar_file, outputdir))
+    Archive(rar_file).extractall(outputdir)
+
+def getFileBaseName(file):
+    return os.path.basename(file)
+
+def getFileBaseNameWithFormat(file):
+    baseName = getFileBaseName(file)
+    return os.path.splitext(baseName)[0]

@@ -24,16 +24,24 @@ class DetectModelTest():
             self.detectModel = DetectModel(self.cfgs, run='testing')
 
             save_dir = ToolUtil.getDirWithPath(self.cfgs['save_dir'])
-            meta_model_file = os.path.join(save_dir,'models/hed-model-{}'.format(self.cfgs['test_snapshot']))
+            meta_model_file = os.path.join(save_dir,'models/detect-model-{}'.format(self.cfgs['test_snapshot']))
 
             saver = tf.train.Saver()
             saver.restore(session, meta_model_file)
 
-            ToolUtil.print_info('Done restoring VGG-16 model from {}'.format(meta_model_file))
+            ToolUtil.print_info('Done restoring Detect model from {}'.format(meta_model_file))
+
+            dirs = os.path.join(save_dir + '/{}'.format('test'))
+            if not os.path.exists(dirs):
+                os.makedirs(dirs)
+
+            self.test_output_dir = os.path.join(dirs,self.cfgs['test_output'])
+            if not os.path.exists(self.test_output_dir):
+                os.makedirs(self.test_output_dir)
 
         except Exception as err:
 
-            ToolUtil.print_error('Error setting up VGG-16 model, {}'.format(err))
+            ToolUtil.print_error('Error setting up Detect model, {}'.format(err))
             self.init = False
 
     def run(self,session):
@@ -41,22 +49,30 @@ class DetectModelTest():
             return
 
         self.detectModel.setup_testing(session)
-
-        filepath = os.path.join(self.cfgs['download_path'], self.cfgs['testing']['list'])
+        download_path = ToolUtil.getDirWithPath(self.cfgs['download_path'])
+        filepath = os.path.join(download_path, self.cfgs['testing']['list'])
         train_list = ToolUtil.read_file_list(filepath)
 
-        ToolUtil.print_info('Writing PNGs at {}'.format(self.cfgs['test_output']))
+        ToolUtil.print_info('Writing PNGs at {}'.format(self.test_output_dir))
 
         for index, img in enumerate(train_list):
-            test_filename = os.path.join(self.cfgs['download_path'], self.cfgs['testing']['dir'], img)
+            test_filename = os.path.join(download_path, self.cfgs['testing']['dir'], img)
+            baseNameWithFormat = ToolUtil.getFileBaseNameWithFormat(test_filename)
+            tmpDir = os.path.join(self.test_output_dir, baseNameWithFormat)
+            if not os.path.exists(tmpDir):
+                os.makedirs(tmpDir)
+
             im = self.fetch_image(test_filename)
 
+            targetFile = os.path.join(tmpDir, ToolUtil.getFileBaseName(test_filename))#原图也保存一下吧
+            open(targetFile, "wb").write(open(test_filename, "rb").read())
+
             edgemap = session.run(self.detectModel.predictions, feed_dict={self.detectModel.images: [im]})
-            self.save_egdemaps(edgemap, index)
+            self.save_egdemaps(tmpDir,edgemap, index)
 
             ToolUtil.print_info('Done testing {}, {}'.format(test_filename, im.shape))
 
-    def save_egdemaps(self, em_maps, index):
+    def save_egdemaps(self, tmp_save_dir,em_maps, index):
 
         # Take the edge map from the network from side layers and fuse layer
         em_maps = [e[0] for e in em_maps]
@@ -69,7 +85,7 @@ class DetectModelTest():
             em = np.tile(em, [1, 1, 3])
 
             em = Image.fromarray(np.uint8(em))
-            em.save(os.path.join(self.cfgs['test_output'], 'testing-{}-{:03}.png'.format(index, idx)))
+            em.save(os.path.join(tmp_save_dir, 'testing-{}-{:03}.png'.format(index, idx)))
 
     def fetch_image(self, test_image):
 
@@ -115,7 +131,10 @@ class DetectModelTest():
         return image
 
 def test():
-
+    session = ToolUtil.get_session(0.4)
+    tester = DetectModelTest()
+    tester.setup(session)
+    tester.run(session)
     print "test success"
 
 
