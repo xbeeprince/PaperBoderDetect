@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+import os
 from time import strftime, localtime
 from termcolor import colored
 
@@ -22,3 +23,34 @@ def print_error(error_string):
     error = '[{0}][ERROR] {1}'.format(get_local_time(), error_string)
 
     print colored(error, 'red')
+
+def projectRootDir():
+    help_dir = os.path.abspath(os.path.dirname(__file__))
+    root_dir = os.path.abspath(os.path.dirname(help_dir))
+    return root_dir
+
+def getDirWithPath(dirPath):
+    root_dir = projectRootDir()
+    tmpDirPath = os.path.join(root_dir, dirPath)
+    return tmpDirPath
+
+def getConfigDir():
+    tmpConfigDir = getDirWithPath("Config")
+    return  tmpConfigDir
+
+def getDataDir():
+    tmpDataDir = getDirWithPath("hed-data")
+    return tmpDataDir
+
+def getModelDir():
+    tmpModelDir = getDirWithPath("Detect")
+    return tmpModelDir
+
+def read_file_list(filelist):
+    pfile = open(filelist)
+    filenames = pfile.readlines()
+    pfile.close()
+
+    filenames = [f.strip() for f in filenames]
+
+    return filenames

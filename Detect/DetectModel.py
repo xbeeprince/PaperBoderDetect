@@ -1,16 +1,17 @@
+# encoding: utf-8
 import time
 import os
 import  tensorflow as tf
 import numpy as np
-import PaperBorderDetect.Help.ToolUtil as  ToolUtil
+import Help.ToolUtil as  ToolUtil
 from DetectModelLoss import sigmoid_cross_entropy_balanced
-from PaperBorderDetect.Config.ConfigManager import ConfigManager
-from PaperBorderDetect.Help.ImageReader import ImageReader
+from Config.ConfigManager import ConfigManager
+from Help.ImageReader import ImageReader
 
 class DetectModel():
     def __init__(self,cfgs, run='training'):
         self.cfgs = cfgs
-        base_path = os.path.abspath(os.path.dirname(__file__))
+        base_path = ToolUtil.getModelDir()
         weights_file = os.path.join(base_path, self.cfgs['model_weights_path'])
 
         self.data_dict = np.load(weights_file, encoding='latin1').item()
@@ -205,14 +206,13 @@ class DetectModel():
 
         self.predictions = []
 
-        for idx, b in enumerate(self.outputs):
-            output = tf.nn.sigmoid(b, name='output_{}'.format(idx))
+        for index, b in enumerate(self.outputs):
+            output = tf.nn.sigmoid(b, name='output_{}'.format(index))
             self.predictions.append(output)
 
 
 def test():
-    config_path = "/Users/tinakang/PycharmProjects/worddetect/PaperBorderDetect/Config/config.yaml"
-    configManager = ConfigManager(config_path)
+    configManager = ConfigManager()
     cfgs = configManager.cfgs
     imagereader = ImageReader(cfgs)
     images, edgemaps, filenames = imagereader.get_training_batch()

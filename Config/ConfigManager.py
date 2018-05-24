@@ -1,19 +1,20 @@
 # encoding: utf-8
 import os
 import yaml
-import PaperBorderDetect.Help.ToolUtil as  ToolUtil
+import Help.ToolUtil as  ToolUtil
 
 class ConfigManager():
 
-    def __init__(self,config_path):
+    def __init__(self):
+        cfilePath = self.configFilePath("config.yaml")
         try:
-            pfile = open(config_path)
+            pfile = open(cfilePath)
             self._cfgs = yaml.load(pfile)
             pfile.close()
 
         except Exception as err:
             self._cfgs = []
-            ToolUtil.print_error('Error reading config file {}, {}'.format(config_path, err))
+            ToolUtil.print_error('Error reading config file {}, {}'.format(cfilePath, err))
 
     @property
     def cfgs(self):
@@ -22,12 +23,18 @@ class ConfigManager():
     def setup(self,session):
         pass
 
-
+    def configFilePath(self,config_file):
+        config_dir = os.path.abspath(os.path.dirname(__file__))
+        config_path = os.path.join(config_dir,config_file)
+        return config_path
 
 def test():
-    config_path = "/Users/prince/PycharmProjects/worddetect/PaperBorderDetect/Config/config.yaml"
-    configManager = ConfigManager(config_path)
+    configManager = ConfigManager()
     cfgs = configManager.cfgs
+
+    configDir = ToolUtil.getConfigDir()
+    dataDir = ToolUtil.getDataDir()
+
     print "test success"
 
 

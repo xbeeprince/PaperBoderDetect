@@ -1,11 +1,11 @@
 # 数据集下载链接
 rar_file: 'http://vcl.ucsd.edu/hed/HED-BSDS.tar'
 # 数据集本地下载的目录
-download_path: '/Users/prince/PycharmProjects/worddetect/PaperBorderDetect/hed-data'
+download_path: 'hed-data'
 # 本地model相关参数和Graph的保存目录
-save_dir: '/Users/prince/PycharmProjects/worddetect/PaperBorderDetect/save_dir'
+save_dir: 'save_dir'
 # 本地测试结果保存目录
-test_output: '/Users/prince/PycharmProjects/worddetect/PaperBorderDetect/test_output'
+test_output: 'test_output'
 # 现有的model文件
 model_weights_path: 'vgg16.npy'
 # training batch size, 取决于GPU

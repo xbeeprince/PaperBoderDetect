@@ -3,8 +3,8 @@ import os
 import time
 import numpy as np
 from PIL import Image
-import ToolUtil
-from PaperBorderDetect.Config.ConfigManager import ConfigManager
+import Help.ToolUtil as  ToolUtil
+from Config.ConfigManager import ConfigManager
 
 class ImageReader():
     def __init__(self,cfgs):
@@ -12,11 +12,12 @@ class ImageReader():
         self.setup(cfgs)
 
     def setup(self,cfgs):
-        self.train_file = os.path.join(cfgs['download_path'], cfgs['training']['list'])
-        self.train_data_dir = os.path.join(cfgs['download_path'], cfgs['training']['dir'])
+        download_path = ToolUtil.getDirWithPath(cfgs['download_path'])
+        self.train_file = os.path.join(download_path, cfgs['training']['list'])
+        self.train_data_dir = os.path.join(download_path, cfgs['training']['dir'])
 
         ToolUtil.print_info('Training data set-up from {}'.format(self.train_file))
-        self.training_pairs = self.read_file_list(self.train_file)
+        self.training_pairs = ToolUtil.read_file_list(self.train_file)
         self.samples = self.split_pair_names(self.training_pairs, self.train_data_dir)
 
         self.n_samples = len(self.training_pairs)
@@ -50,6 +51,11 @@ class ImageReader():
 
     def get_training_batch(self):
         batch_ids = np.random.choice(self.training_ids, self.cfgs['batch_size_train'])
+
+        return self.get_batch(batch_ids)
+
+    def get_validation_batch(self):
+        batch_ids = np.random.choice(self.validation_ids, self.cfgs['batch_size_val'])
 
         return self.get_batch(batch_ids)
 
@@ -99,8 +105,7 @@ class ImageReader():
 
 def ImageReaderTest():
     print "test run begine ..."
-    config_path = "/Users/prince/PycharmProjects/worddetect/PaperBorderDetect/Config/config.yaml"
-    configManager = ConfigManager(config_path)
+    configManager = ConfigManager()
     imagereader = ImageReader(configManager.cfgs)
     images,edgemaps,filenames = imagereader.get_training_batch()
 
