@@ -30,8 +30,8 @@ def main(args):
     if args.run_test or args.run_train:
         session = get_session(args.gpu_limit)
 
-    if args.run_train and args.dataDir and args.initmodelfile:
-        trainer = DetectModelTrain()
+    if args.run_train:
+        trainer = DetectModelTrain(args.dataDir,args.initmodelfile)
         trainer.setup()
         trainer.run(session)
 

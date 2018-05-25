@@ -10,6 +10,7 @@ from DetectModel import DetectModel
 class DetectModelTrain():
 
     def __init__(self,dataDir=None,initmodelfile=None):
+        self.init = True
         self.dataDir = dataDir
         self.initmodelfile = initmodelfile
         configManager = ConfigManager()
