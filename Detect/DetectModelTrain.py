@@ -35,7 +35,7 @@ class DetectModelTrain():
         if not self.init:
             return
 
-        train_data = ImageReader(self.cfgs)
+        train_data = ImageReader(self.cfgs,self.dataDir)
         self.detectModel.setup_training(session)
         opt = tf.train.AdadeltaOptimizer(self.cfgs['optimizer_params']['learning_rate'])
         train = opt.minimize(self.detectModel.loss)
