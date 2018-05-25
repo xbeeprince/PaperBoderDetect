@@ -12,8 +12,9 @@ from DetectModel import DetectModel
 
 class DetectModelTest():
 
-    def __init__(self):
+    def __init__(self,dataDir=None):
         self.init = True
+        self.dataDir = dataDir
         configManager = ConfigManager()
         self.cfgs = configManager.cfgs
 
@@ -49,7 +50,10 @@ class DetectModelTest():
             return
 
         self.detectModel.setup_testing(session)
-        download_path = ToolUtil.getDirWithPath(self.cfgs['download_path'])
+        if self.dataDir == None:
+            download_path = ToolUtil.getDirWithPath(self.cfgs['download_path'])
+        else:
+            download_path = os.path.join(self.dataDir,'hed-data')
         filepath = os.path.join(download_path, self.cfgs['testing']['list'])
         train_list = ToolUtil.read_file_list(filepath)
 
@@ -139,6 +143,6 @@ def test():
 
 
 if __name__ == '__main__':
-    print "test begine"
+    print "test begine : " + ToolUtil.get_local_time()
     test()
-    print "test end"
+    print "test end : " + ToolUtil.get_local_time()

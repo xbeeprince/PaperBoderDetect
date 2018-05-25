@@ -9,10 +9,13 @@ from Config.ConfigManager import ConfigManager
 from Help.ImageReader import ImageReader
 
 class DetectModel():
-    def __init__(self,cfgs, run='training'):
+    def __init__(self,cfgs, initmodelfile=None, run='training'):
         self.cfgs = cfgs
-        base_path = ToolUtil.getModelDir()
-        weights_file = os.path.join(base_path, self.cfgs['model_weights_path'])
+        if initmodelfile == None:
+            base_path = ToolUtil.getModelDir()
+            weights_file = os.path.join(base_path, self.cfgs['model_weights_path'])
+        else:
+            weights_file = initmodelfile
 
         self.data_dict = np.load(weights_file, encoding='latin1').item()
         ToolUtil.print_info("Model weights loaded from {}".format(self.cfgs['model_weights_path']))
@@ -21,6 +24,7 @@ class DetectModel():
                                                   self.cfgs[run]['n_channels']])
         self.edgemaps = tf.placeholder(tf.float32,
                                        [None, self.cfgs[run]['image_height'], self.cfgs[run]['image_width'], 1])
+        self.predictions = []
 
         self.setupModel()
 
@@ -195,8 +199,9 @@ class DetectModel():
 
         self.merged_summary = tf.summary.merge_all()
 
-        self.train_writer = tf.summary.FileWriter(self.cfgs['save_dir'] + '/train', session.graph)
-        self.val_writer = tf.summary.FileWriter(self.cfgs['save_dir'] + '/val')
+        save_dir = ToolUtil.getDirWithPath(self.cfgs['save_dir'])
+        self.train_writer = tf.summary.FileWriter(save_dir + '/train', session.graph)
+        self.val_writer = tf.summary.FileWriter(save_dir + '/val')
 
     def setup_testing(self, session):
 

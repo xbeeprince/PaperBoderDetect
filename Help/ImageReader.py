@@ -7,12 +7,18 @@ import Help.ToolUtil as  ToolUtil
 from Config.ConfigManager import ConfigManager
 
 class ImageReader():
-    def __init__(self,cfgs):
+    def __init__(self,cfgs,dataDir=None,initmodelfile=None):
         self._cfgs = cfgs
+        self.dataDir = dataDir
+        self.initmodelfile = initmodelfile
         self.setup(cfgs)
 
     def setup(self,cfgs):
-        download_path = ToolUtil.getDirWithPath(cfgs['download_path'])
+        if self.dataDir == None:
+            download_path = ToolUtil.getDirWithPath(cfgs['download_path'])
+        else:
+            download_path = os.path.join(self.dataDir, 'hed-data')
+
         self.train_file = os.path.join(download_path, cfgs['training']['list'])
         self.train_data_dir = os.path.join(download_path, cfgs['training']['dir'])
 

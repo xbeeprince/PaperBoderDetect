@@ -9,15 +9,16 @@ from DetectModel import DetectModel
 
 class DetectModelTrain():
 
-    def __init__(self):
-        self.init = True
+    def __init__(self,dataDir=None,initmodelfile=None):
+        self.dataDir = dataDir
+        self.initmodelfile = initmodelfile
         configManager = ConfigManager()
         self.cfgs = configManager.cfgs
 
     def setup(self):
 
         try:
-            self.detectModel = DetectModel(self.cfgs)
+            self.detectModel = DetectModel(self.cfgs,self.initmodelfile)
             ToolUtil.print_info('Done initializing VGG-16 Detect model')
 
             dirs = ['train', 'val', 'test', 'models']
@@ -80,6 +81,6 @@ def test():
 
 
 if __name__ == '__main__':
-    print "test begine"
+    print "test begine : " + ToolUtil.get_local_time()
     test()
-    print "test end"
+    print "test end : " + ToolUtil.get_local_time()

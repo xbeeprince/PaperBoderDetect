@@ -9,7 +9,7 @@ from termcolor import colored
 
 
 def get_local_time():
-    return strftime("%d %b %Y %Hh%Mm%Ss", localtime())
+    return strftime("%Y-%m-%d %H:%M:%S", localtime())
 
 def print_info(info_string):
     info = '[{0}][INFO] {1}'.format(get_local_time(), info_string)

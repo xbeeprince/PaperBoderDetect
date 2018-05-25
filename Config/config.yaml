@@ -15,7 +15,7 @@ batch_size_val: 10
 # 训练集取总数的占比
 train_split: 0.8
 # 训练多少次
-max_iterations: 1000
+max_iterations: 100000
 # optimizer params (not used currently Adam is used by default)
 optimizer: 'adam'
 optimizer_params:
