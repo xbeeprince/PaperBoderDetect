@@ -11,6 +11,7 @@ from Help.ImageReader import ImageReader
 class DetectModel():
     def __init__(self,cfgs, saveDir=None,initmodelfile=None, run='training'):
         self.cfgs = cfgs
+        self.saveDir = saveDir
         if initmodelfile == None:
             base_path = ToolUtil.getModelDir()
             weights_file = os.path.join(base_path, self.cfgs['model_weights_path'])
@@ -199,7 +200,13 @@ class DetectModel():
 
         self.merged_summary = tf.summary.merge_all()
 
-        save_dir = ToolUtil.getDirWithPath(self.cfgs['save_dir'])
+        if self.saveDir == None:
+            save_dir = ToolUtil.getDirWithPath(self.cfgs['save_dir'])
+        else:
+            save_dir = self.saveDir
+            if not os.path.exists(save_dir):
+                os.makedirs(save_dir)
+
         self.train_writer = tf.summary.FileWriter(save_dir + '/train', session.graph)
         self.val_writer = tf.summary.FileWriter(save_dir + '/val')
 
