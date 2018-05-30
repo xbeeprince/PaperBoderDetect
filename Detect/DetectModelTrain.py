@@ -15,7 +15,7 @@ class DetectModelTrain():
         self.saveDir = saveDir
         self.initmodelfile = initmodelfile
         self.configfile = configfile
-        configManager = ConfigManager()
+        configManager = ConfigManager(self.configfile)
         self.cfgs = configManager.cfgs
 
     def setup(self):
