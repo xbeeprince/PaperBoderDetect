@@ -9,9 +9,10 @@ from DetectModel import DetectModel
 
 class DetectModelTrain():
 
-    def __init__(self,dataDir=None,initmodelfile=None):
+    def __init__(self,dataDir=None,saveDir=None,initmodelfile=None):
         self.init = True
         self.dataDir = dataDir
+        self.saveDir = saveDir
         self.initmodelfile = initmodelfile
         configManager = ConfigManager()
         self.cfgs = configManager.cfgs
@@ -19,11 +20,17 @@ class DetectModelTrain():
     def setup(self):
 
         try:
-            self.detectModel = DetectModel(self.cfgs,self.initmodelfile)
+            self.detectModel = DetectModel(self.cfgs,self.saveDir,self.initmodelfile)
             ToolUtil.print_info('Done initializing VGG-16 Detect model')
 
             dirs = ['train', 'val', 'test', 'models']
-            save_dir = ToolUtil.getDirWithPath(self.cfgs['save_dir'])
+            if self.saveDir == None:
+                save_dir = ToolUtil.getDirWithPath(self.cfgs['save_dir'])
+            else:
+                save_dir = self.saveDir
+                if not os.path.exists(save_dir):
+                    os.makedirs(save_dir)
+
             dirs = [os.path.join(save_dir + '/{}'.format(d)) for d in dirs]
             _ = [os.makedirs(d) for d in dirs if not os.path.exists(d)]
 
@@ -58,7 +65,13 @@ class DetectModelTrain():
 
             if index % self.cfgs['save_interval'] == 0:
                 saver = tf.train.Saver()
-                save_dir = ToolUtil.getDirWithPath(self.cfgs['save_dir'])
+                if self.saveDir == None:
+                    save_dir = ToolUtil.getDirWithPath(self.cfgs['save_dir'])
+                else:
+                    save_dir = self.saveDir
+                    if not os.path.exists(save_dir):
+                        os.makedirs(save_dir)
+
                 saver.save(session, os.path.join(save_dir, 'models/detect-model'), global_step=index)
                 ToolUtil.print_info('save detect model with index : {}'.format(index))
 

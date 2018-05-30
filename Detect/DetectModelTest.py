@@ -12,9 +12,10 @@ from DetectModel import DetectModel
 
 class DetectModelTest():
 
-    def __init__(self,dataDir=None):
+    def __init__(self,dataDir=None,saveDir=None):
         self.init = True
         self.dataDir = dataDir
+        self.saveDir = saveDir
         configManager = ConfigManager()
         self.cfgs = configManager.cfgs
 
@@ -22,9 +23,15 @@ class DetectModelTest():
 
         try:
 
-            self.detectModel = DetectModel(self.cfgs, run='testing')
+            self.detectModel = DetectModel(self.cfgs,self.saveDir,run='testing')
 
-            save_dir = ToolUtil.getDirWithPath(self.cfgs['save_dir'])
+            if self.saveDir == None:
+                save_dir = ToolUtil.getDirWithPath(self.cfgs['save_dir'])
+            else:
+                save_dir = self.saveDir
+                if not os.path.exists(save_dir):
+                    os.makedirs(save_dir)
+
             meta_model_file = os.path.join(save_dir,'models/detect-model-{}'.format(self.cfgs['test_snapshot']))
 
             saver = tf.train.Saver()

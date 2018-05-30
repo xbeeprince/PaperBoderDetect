@@ -9,7 +9,7 @@ from Config.ConfigManager import ConfigManager
 from Help.ImageReader import ImageReader
 
 class DetectModel():
-    def __init__(self,cfgs, initmodelfile=None, run='training'):
+    def __init__(self,cfgs, saveDir=None,initmodelfile=None, run='training'):
         self.cfgs = cfgs
         if initmodelfile == None:
             base_path = ToolUtil.getModelDir()
