@@ -1,11 +1,25 @@
 # encoding: utf-8
 
 import os
-import wget
-from pyunpack import Archive
+
+try:
+    import wget
+except:
+    os.system("pip install wget")
+
+try:
+    from pyunpack import Archive
+except:
+    os.system("pip install pyunpack")
+
+try:
+    from termcolor import colored
+except:
+    os.system("pip install termcolor")
+
 import tensorflow as  tf
 from time import strftime, localtime
-from termcolor import colored
+
 
 
 def get_local_time():

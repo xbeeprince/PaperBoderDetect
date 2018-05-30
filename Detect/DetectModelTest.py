@@ -52,6 +52,8 @@ class DetectModelTest():
             ToolUtil.print_error('Error setting up Detect model, {}'.format(err))
             self.init = False
 
+
+
     def run(self,session):
         if not self.init:
             return
@@ -60,7 +62,7 @@ class DetectModelTest():
         if self.dataDir == None:
             download_path = ToolUtil.getDirWithPath(self.cfgs['download_path'])
         else:
-            download_path = os.path.join(self.dataDir,'hed-data')
+            download_path = self.dataDir
         filepath = os.path.join(download_path, self.cfgs['testing']['list'])
         train_list = ToolUtil.read_file_list(filepath)
 

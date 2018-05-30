@@ -17,7 +17,7 @@ class ImageReader():
         if self.dataDir == None:
             download_path = ToolUtil.getDirWithPath(cfgs['download_path'])
         else:
-            download_path = os.path.join(self.dataDir, 'hed-data')
+            download_path = self.dataDir
 
         self.train_file = os.path.join(download_path, cfgs['training']['list'])
         self.train_data_dir = os.path.join(download_path, cfgs['training']['dir'])

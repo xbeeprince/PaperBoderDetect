@@ -9,11 +9,12 @@ from DetectModel import DetectModel
 
 class DetectModelTrain():
 
-    def __init__(self,dataDir=None,saveDir=None,initmodelfile=None):
+    def __init__(self,dataDir=None,saveDir=None,initmodelfile=None,configfile=None):
         self.init = True
         self.dataDir = dataDir
         self.saveDir = saveDir
         self.initmodelfile = initmodelfile
+        self.configfile = configfile
         configManager = ConfigManager()
         self.cfgs = configManager.cfgs
 

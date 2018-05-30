@@ -5,16 +5,21 @@ import Help.ToolUtil as  ToolUtil
 
 class ConfigManager():
 
-    def __init__(self):
-        cfilePath = self.configFilePath("config.yaml")
+    def __init__(self,configfile=None):
+        if configfile == None:
+            cfilePath = self.configFilePath("config.yaml")
+            self.configfile = cfilePath
+        else:
+            self.configfile = configfile
+
         try:
-            pfile = open(cfilePath)
+            pfile = open(self.configfile)
             self._cfgs = yaml.load(pfile)
             pfile.close()
 
         except Exception as err:
             self._cfgs = []
-            ToolUtil.print_error('Error reading config file {}, {}'.format(cfilePath, err))
+            ToolUtil.print_error('Error reading config file {}, {}'.format(self.configfile, err))
 
     @property
     def cfgs(self):

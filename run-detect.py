@@ -31,7 +31,7 @@ def main(args):
         session = get_session(args.gpu_limit)
 
     if args.run_train:
-        trainer = DetectModelTrain(args.datadir,args.savedir,args.initmodelfile)
+        trainer = DetectModelTrain(args.datadir,args.savedir,args.initmodelfile,args.configfile)
         trainer.setup()
         trainer.run(session)
 
@@ -48,6 +48,7 @@ if __name__ == '__main__':
     parser.add_argument('--datadir', dest='datadir', type=str, help='Experiment configuration datadir path')
     parser.add_argument('--savedir', dest='savedir', type=str, help='Experiment configuration savedir path')
     parser.add_argument('--initmodelfile', dest='initmodelfile', type=str, help='Experiment init model file')
+    parser.add_argument('--configfile', dest='configfile', type=str, help='Experiment init configfile file')
     parser.add_argument('--gpu-limit', dest='gpu_limit', type=float, default=1.0,help='Use fraction of GPU memory (Useful with TensorFlow backend)')
 
     args = parser.parse_args()
